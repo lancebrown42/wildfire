@@ -1,4 +1,4 @@
-var MainController = function($scope){
+var MainController = function($scope,$interval){
   mainCtrl = this
   mainCtrl.land = [
     'Trees',
@@ -84,6 +84,7 @@ var MainController = function($scope){
     'Trees'
   ]
   mainCtrl.clickState = 'default'
+
   mainCtrl.defaultState = true
   mainCtrl.fireState = false
   mainCtrl.waterState = false
@@ -97,6 +98,7 @@ var MainController = function($scope){
         }
     }()
   mainCtrl.click = function(e){
+    e.preventDefault()
     mainCtrl.clickTarget = e.target.id
   }
   // console.log(mainCtrl.class)
@@ -104,22 +106,24 @@ var MainController = function($scope){
   // mainCtrl.water = function(e){
   //   // console.log('click')
   //   // e.preventDefault()
-  //   console.log('water check')
+  //   // console.log('water check')
   //   // console.log(mainCtrl.clickState)
-  //   return mainCtrl.spread(e,'water')
+  //   return waterActive
 
   // }
   // mainCtrl.fire = function(e){
   //   // e.preventDefault()
-  //   console.log('fire check')
+  //   // console.log('fire check')
   //   // console.log(mainCtrl.clickState)
-  //   return mainCtrl.spread(e,'fire')
+  //   return fireActive
 
   // }
   mainCtrl.toggle = function(state){
     if (state == 'water'){
         if(mainCtrl.clickState == 'water'){
             mainCtrl.clickState = 'default'
+            fireActive = false
+            // waterActive = !waterActive
             return
         }
         mainCtrl.clickState = 'water'
@@ -128,6 +132,8 @@ var MainController = function($scope){
     if (state == 'fire'){
         if(mainCtrl.clickState == 'fire'){
             mainCtrl.clickState == 'default'
+            waterActive = false
+            // fireActive = !fireActive
             return
         }
         mainCtrl.clickState = 'fire'
@@ -145,6 +151,7 @@ var MainController = function($scope){
         }
         else if (mainCtrl.clickState == 'fire'){
             currentClass[1] = 'btn-danger'
+            console.log("tile number "+index +" is in danger")
         }
 
         mainCtrl.clickTarget = undefined
@@ -184,11 +191,45 @@ var MainController = function($scope){
     // }
     // console.log(answer)
   }
+
   mainCtrl.default = function(e){
     // console.log('is it default')
     return mainCtrl.defaultState
 
   }
+  mainCtrl.spread = $interval(function($interval){
+    for (tile in mainCtrl.land){
+        // console.log (tile)
+        var currentClass = mainCtrl.class[tile]
+        var next = eval(tile)+1
+        var prev = tile-1
+        // console.log('next = '+next)
+        // console.log('prev = '+prev)
+        // console.log(currentClass[1])
+
+        if (currentClass[1] == 'btn-danger'){
+            if(mainCtrl.class[next][1]=='btn-info'||mainCtrl.class[next][1]=='btn-danger'){
+                continue
+            }
+            else{
+                // console.log('burning')
+                mainCtrl.clickTarget = next
+                mainCtrl.clickState = 'fire'
+                console.log(next)
+                mainCtrl.change(next)
+            }
+            if(mainCtrl.class[prev][1]=='btn-info'||mainCtrl.class[prev][1]=='btn-danger'){
+                continue
+            }
+            else{
+                mainCtrl.clickTarget = prev
+                mainCtrl.clickState = 'fire'
+                mainCtrl.change(prev)
+            }
+        }
+    }
+  },1000)
+  // window.setInterval(mainCtrl.spread,1000)
   // mainCtrl.spread = function(event,refer){
   //   console.log(event)
   //   if (event){
@@ -232,6 +273,6 @@ var MainController = function($scope){
 }
 
 angular.module('app', [])
-  .controller('MainController', ['$scope', MainController])
+  .controller('MainController', ['$scope', '$interval',MainController])
 
 

@@ -16,12 +16,12 @@
 	<div class="col-lg-2">
 			<p>
 				<div id="lake" class="power" data-power="water">
-					<a href="#" class="col-lg-12 btn btn-info" ng-click = "mainCtrl.toggle('water')">Lake</a>
+					<a href="#" class="col-lg-12 btn btn-info" ng-click = "mainCtrl.toggle('water')" ng-class = '{"btn-active":mainCtrl.waterState}'>Lake</a>
 				</div>
 			</p>
 			<p>
 				<div id="campfire" class="power" data-power="fire">
-					<a href="#" class="col-lg-12 btn btn-danger" ng-click = "mainCtrl.toggle('fire')">Campfire</a>
+					<a href="#" class="col-lg-12 btn btn-danger" ng-click = "mainCtrl.toggle('fire')" ng-class = '{"btn-active":mainCtrl.fireState}'>Campfire</a>
 				</div>
 			</p>
 	</div>
